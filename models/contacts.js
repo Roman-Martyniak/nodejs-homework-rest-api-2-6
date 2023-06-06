@@ -44,18 +44,18 @@ async function removeContactById(contactId) {
 async function updateContactById(id, data) {
   try {
     const contacts = await listContacts();
-    const index = contacts.findIndex((item) => item.id === id.toString());
+    const index = contacts.findIndex((item) => item.id === id);
     if (index === -1) {
       return null;
     }
     contacts[index] = {id, ...data};
     await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
     return contacts[index];
-  } catch (error) {
-    console.error(error);
-  }
-}
+    } catch (error) {
+      console.error(error);
+    }
 
+}
 async function addContact({name, email, phone}) {
   try {
     const contacts = await listContacts();

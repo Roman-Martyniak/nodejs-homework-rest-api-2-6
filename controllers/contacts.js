@@ -28,18 +28,19 @@ const postAddContact = async (req, res) => {
 };
 
 const putUpdateContact = async (req, res) => {
-        const {error} = addSchema.validate(req.body);
-        if (error) {
-                throw HttpError(400, "missing fields");
+        const { error: validationError } = addSchema.validate(req.body);
+        if (validationError) {
+                throw new HttpError(400, "Missing fields");
         }
-        const {contactId} = req.params;
+
+        const { contactId } = req.params;
         const result = await contacts.updateContactById(contactId, req.body);
         if (!result) {
-                throw HttpError(404, "Not found");
+                throw new HttpError(404, "Not found");
         }
+
         res.json(result);
 };
-
 const deleteContact = async (req, res) => {
         const {contactId} = req.params;
         const result = await contacts.removeContactById(contactId);
@@ -54,5 +55,5 @@ module.exports = {
         deleteContact: ctrlWrapper(deleteContact),
         postAddContact: ctrlWrapper(postAddContact),
         getContacts: ctrlWrapper(getContacts),
-        getListContacts: ctrlWrapper(getListContacts)
-}
+        getListContacts: ctrlWrapper(getListContacts),
+};
