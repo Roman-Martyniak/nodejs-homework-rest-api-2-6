@@ -1,5 +1,4 @@
 const HttpError = require("../helpers/HttpError");
-const addSchema = require("../schemas/schema");
 const contacts = require("../models/contacts");
 const {ctrlWrapper} = require("../helpers");
 
@@ -19,26 +18,18 @@ const getContacts = async (req, res) => {
 };
 
 const postAddContact = async (req, res) => {
-        const {error} = addSchema.validate(req.body);
-        if (error) {
-                throw HttpError(400, "missing required name field");
-        }
-        const result = await contacts.addContact(req.body);
-        res.status(201).json(result);
+        const { name, email, phone } = req.body;
+        const contact = await contacts.addContact({ name, email, phone });
+        res.status(201).json(contact);
 };
 
 const putUpdateContact = async (req, res) => {
-        const { error: validationError } = addSchema.validate(req.body);
-        if (validationError) {
-                throw new HttpError(400, "Missing fields");
-        }
-
+        const { name, email, phone } = req.body;
         const { contactId } = req.params;
-        const result = await contacts.updateContactById(contactId, req.body);
+        const result = await contacts.updateContactById(contactId, { name, email, phone });
         if (!result) {
                 throw new HttpError(404, "Not found");
         }
-
         res.json(result);
 };
 const deleteContact = async (req, res) => {
