@@ -5,7 +5,7 @@ const router = express.Router()
 const ctrlWrapper = require('../../helpers/ctrlWrapper')
 const validateEmptyBody = require('../../middlewares/validateEmptyBody')
 const validateBody = require('../../middlewares/validateBody');
-const schema = require('../../schemas/schema')
+const schema = require('../../models/contacts')
 
 const validateMiddleware = validateBody(schema);
 
