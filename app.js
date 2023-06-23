@@ -15,7 +15,7 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use("*/api/users", authRouter);
+app.use("/users", authRouter);
 app.use("/api/contacts", contactsRouter);
 
 app.use((req, res) => {
@@ -24,10 +24,6 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   const { status = 500, message = "Server error" } = err;
-
-  if (status === 400) {
-    res.status(status).json(message);
-  }
   res.status(status).json({ message });
 });
 

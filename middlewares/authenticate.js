@@ -1,25 +1,28 @@
 const jwt = require("jsonwebtoken");
-const { User } = require("../models/user");
-const  HttpError  = require("../helpers");
+const  {User}  = require("../models/user");
+const  {HttpError}  = require("../helpers/index");
+require("dotenv").config()
 const { SECRET_KEY } = process.env;
 
-const authenticate = async (request, response, next) => {
-    // в Node.js всі хаголовки пишуться з маленької літери
-    const { authorization = "" } = request.headers;
+const authenticate = async (req, res, next) => {
+    const { authorization = "" } = req.headers;
     const [bearer, token] = authorization.split(" ");
+
     if (bearer !== "Bearer") {
-        throw HttpError(401, "Not authorized");
+        next(HttpError(401));
     }
+
     try {
         const { id } = jwt.verify(token, SECRET_KEY);
         const user = await User.findById(id);
-        if (!user || !user.token || user.token !== token) {
-            throw HttpError(401, "Not authorized");
+        if (!user || !user.token) {
+            next(HttpError(401));
         }
-        request.user = user;
+
+        req.user = user;
         next();
     } catch (error) {
-        next(HttpError(401, "Not authorized"));
+        next(HttpError(401));
     }
 };
 
